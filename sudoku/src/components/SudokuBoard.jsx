@@ -127,12 +127,16 @@ export default function SudokuBoard() {
     }
   };
 
+  const showModalMessage = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+  };
+
   const checkSolution = () => {
     for (let row = 0; row < 9; row++) {
       for (let col = 0; col < 9; col++) {
         if (!board[row][col]) {
-          setMessage("The board is not completely filled.");
-          setMessageType("error");
+          showModalMessage("The board is not completely filled.", "error");
           return;
         }
       }
@@ -142,31 +146,35 @@ export default function SudokuBoard() {
       const colSet = new Set();
       const boxSet = new Set();
       for (let j = 0; j < 9; j++) {
+        // Row check
         if (rowSet.has(board[i][j])) {
-          setMessage("Incorrect solution: duplicate in a row.");
-          setMessageType("error");
+          showModalMessage("Incorrect solution: duplicate in a row.", "error");
           return;
         }
         rowSet.add(board[i][j]);
+        // Column check
         if (colSet.has(board[j][i])) {
-          setMessage("Incorrect solution: duplicate in a column.");
-          setMessageType("error");
+          showModalMessage(
+            "Incorrect solution: duplicate in a column.",
+            "error"
+          );
           return;
         }
         colSet.add(board[j][i]);
-        // Box
+        // Box check (corrected)
         const boxRow = 3 * Math.floor(i / 3) + Math.floor(j / 3);
-        const boxCol = 3 * Math.floor(col / 3) + (j % 3);
+        const boxCol = 3 * (i % 3) + (j % 3);
         if (boxSet.has(board[boxRow][boxCol])) {
-          setMessage("Incorrect solution: duplicate in a 3x3 box.");
-          setMessageType("error");
+          showModalMessage(
+            "Incorrect solution: duplicate in a 3x3 box.",
+            "error"
+          );
           return;
         }
         boxSet.add(board[boxRow][boxCol]);
       }
     }
-    setMessage("Congratulations! The solution is correct.");
-    setMessageType("success");
+    showModalMessage("Congratulations! The solution is correct.", "success");
   };
 
   const handleSolve = () => {
